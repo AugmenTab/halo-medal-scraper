@@ -27,22 +27,22 @@ gameList = [
     {
         'game': 'reach', 
         'url': 'https://www.halopedia.org/List_of_Halo:_Reach_Medals',
-        'selector': ''
+        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(6)'
     },
     {
         'game': 'halo4', 
         'url': 'https://www.halopedia.org/List_of_Halo_4_Medals',
-        'selector': ''
+        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table'
     },
     {
         'game': 'spartan-assault', 
         'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Assault_Medals',
-        'selector': ''
+        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table'
     },
     {
         'game': 'spartan-strike', 
         'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Strike_Medals',
-        'selector': ''
+        'selector': '#mw-content-text > table > tbody > tr > td > div > table'
     }
 ]
 
@@ -73,6 +73,9 @@ def getSoup(link):
     else:
         return bs4.BeautifulSoup(res.text, 'html.parser')
 
+def getElems(game, res):
+    #
+
 #TODO: Range over table on URL page.
 #TODO: For each table row:
     #TODO: Collect name and win condition, then append to Excel file.
@@ -86,7 +89,7 @@ def scrapeMedals(games):
     for game in games:
         #makeFolder(game['game'])
         #makeSheets(game['game'])
-        soup = getSoup(game['url'])
+        getElems(game, getSoup(game['url']))
 
 if __name__ == "__main__":
     scrapeMedals(test) #switch to gameList when complete
