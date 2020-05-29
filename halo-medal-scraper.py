@@ -5,34 +5,52 @@ wb = openpyxl.load_workbook('medal-list.xlsx')
 
 gameList = [
     {
-        'game': 'halo3', 
-        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals'
+        'game': 'halo3-campaign', 
+        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
+        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(15)'
+    },
+    {
+        'game': 'halo3-gmp',
+        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
+        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(7)'
+    },
+    {
+        'game': 'halo3-omp',
+        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
+        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(9)'
     },
     {
         'game': 'odst', 
-        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals'},
+        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
+        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(13)'
+    },
     {
         'game': 'reach', 
-        'url': 'https://www.halopedia.org/List_of_Halo:_Reach_Medals'
+        'url': 'https://www.halopedia.org/List_of_Halo:_Reach_Medals',
+        'selector': ''
     },
     {
         'game': 'halo4', 
-        'url': 'https://www.halopedia.org/List_of_Halo_4_Medals'
+        'url': 'https://www.halopedia.org/List_of_Halo_4_Medals',
+        'selector': ''
     },
     {
         'game': 'spartan-assault', 
-        'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Assault_Medals'
+        'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Assault_Medals',
+        'selector': ''
     },
     {
         'game': 'spartan-strike', 
-        'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Strike_Medals'
+        'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Strike_Medals',
+        'selector': ''
     }
 ]
 
 test = [
     {
         'game': 'halo3', 
-        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals'
+        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
+        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(15)'
     }
 ]
 
@@ -47,9 +65,9 @@ def makeSheets(gameName):
         wb.create_sheet(gameName)
         wb.save('medal-list.xlsx')
 
-def getSoup(game):
+def getSoup(link):
     headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36' }
-    res = requests.get(game['url'], headers=headers)
+    res = requests.get(link, headers=headers)
     if res.raise_for_status():
         raise Exception('The web fetch request failed.')
     else:
@@ -61,12 +79,14 @@ def getSoup(game):
         # Make sure to ignore section headers.
     #TODO: Navigate to image page, download image, and record file name.
     #TODO: Add name to correct line on Excel file.
+    #TODO: Log any missing medal images on separate sheet by game and medal name.
+    #TODO: Mark each game done when complete on checklist page.
 
 def scrapeMedals(games):
     for game in games:
         #makeFolder(game['game'])
         #makeSheets(game['game'])
-        soup = getSoup(game)
+        soup = getSoup(game['url'])
 
 if __name__ == "__main__":
     scrapeMedals(test) #switch to gameList when complete
