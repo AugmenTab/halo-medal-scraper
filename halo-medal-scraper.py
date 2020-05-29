@@ -1,6 +1,6 @@
 #! python3
 
-import os, openpyxl
+import os, openpyxl, bs4, requests
 wb = openpyxl.load_workbook('medal-list.xlsx')
 
 gameList = [
@@ -47,6 +47,14 @@ def makeSheets(gameName):
         wb.create_sheet(gameName)
         wb.save('medal-list.xlsx')
 
+def getSoup(game):
+    headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36' }
+    res = requests.get(game['url'], headers=headers)
+    if res.raise_for_status():
+        raise Exception('The web fetch request failed.')
+    else:
+        return bs4.BeautifulSoup(res.text, 'html.parser')
+
 #TODO: Range over table on URL page.
 #TODO: For each table row:
     #TODO: Collect name and win condition, then append to Excel file.
@@ -54,12 +62,11 @@ def makeSheets(gameName):
     #TODO: Navigate to image page, download image, and record file name.
     #TODO: Add name to correct line on Excel file.
 
-
 def scrapeMedals(games):
     for game in games:
         #makeFolder(game['game'])
-        makeSheets(game['game'])
-
+        #makeSheets(game['game'])
+        soup = getSoup(game)
 
 if __name__ == "__main__":
     scrapeMedals(test) #switch to gameList when complete
