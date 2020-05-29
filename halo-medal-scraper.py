@@ -1,8 +1,7 @@
 #! python3
 
-import os #, openpyxl
-#wb = openpyxl.load_workbook('medal-list.xlsx')
-
+import os, openpyxl
+wb = openpyxl.load_workbook('medal-list.xlsx')
 
 gameList = [
     {
@@ -42,14 +41,13 @@ def makeFolder(gameName):
     if not os.path.exists(dir):
         os.mkdir(dir)
     
-
-#TODO: Check if sheet matching game name exist on Excel file, make one if not.
 def makeSheets(gameName):
-    print(gameName)
+    sheets = wb.sheetnames
+    if gameName not in sheets:
+        wb.create_sheet(gameName)
+        wb.save('medal-list.xlsx')
 
 #TODO: Range over table on URL page.
-
-
 #TODO: For each table row:
     #TODO: Collect name and win condition, then append to Excel file.
         # Make sure to ignore section headers.
@@ -61,6 +59,7 @@ def scrapeMedals(games):
     for game in games:
         #makeFolder(game['game'])
         makeSheets(game['game'])
+
 
 if __name__ == "__main__":
     scrapeMedals(test) #switch to gameList when complete
