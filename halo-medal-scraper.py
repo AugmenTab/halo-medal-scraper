@@ -78,10 +78,8 @@ def getTable(game, res):
     elems = res.select(game['selector'])
     return elems[game['i']]
 
-#TODO: Range over table on URL page.
-#TODO: For each table row:
+#TODO: Find all tr elements that contain td elements. For each qualifying tr:
     #TODO: Collect name and win condition, then append to Excel file.
-        # Make sure to ignore section headers.
     #TODO: Navigate to image page, download image, and record file name.
     #TODO: Add name to correct line on Excel file.
     #TODO: Log any missing medal images on separate sheet by game and medal name.
