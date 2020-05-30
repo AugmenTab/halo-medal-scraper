@@ -1,7 +1,6 @@
 #! python3
 
 import os, openpyxl, bs4, requests
-wb = openpyxl.load_workbook('medal-list.xlsx')
 
 gameList = [
     {
@@ -83,11 +82,15 @@ def getTable(game, res):
     #TODO: Mark each game done when complete on checklist page.
 
 def scrapeMedals(games):
+    global wb
+    wb = openpyxl.load_workbook('medal-list.xlsx')
     for game in games:
         #makeFolder(game['game'])
-        #makeSheets(game['game'])
-        table = getTable(game, getSoup(game['url']))
-        print(table)
+        makeSheets(game['game'])
+        #table = getTable(game, getSoup(game['url']))
+    wb.save('medal-list.xlsx')
+    wb.close()
+    
 
 if __name__ == "__main__":
     scrapeMedals(test) #switch to gameList when complete
