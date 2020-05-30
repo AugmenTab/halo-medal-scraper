@@ -7,42 +7,42 @@ gameList = [
     {
         'game': 'halo3-campaign', 
         'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
-        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(15)'
+        'i': 3
     },
     {
         'game': 'halo3-gmp',
         'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
-        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(7)'
+        'i': 0
     },
     {
         'game': 'halo3-omp',
         'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
-        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(9)'
+        'i': 1
     },
     {
         'game': 'odst', 
         'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
-        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(13)'
+        'i': 2
     },
     {
         'game': 'reach', 
         'url': 'https://www.halopedia.org/List_of_Halo:_Reach_Medals',
-        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(6)'
+        'i': 0
     },
     {
         'game': 'halo4', 
         'url': 'https://www.halopedia.org/List_of_Halo_4_Medals',
-        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table'
+        'i': 0
     },
     {
         'game': 'spartan-assault', 
         'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Assault_Medals',
-        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table'
+        'i': 0
     },
     {
         'game': 'spartan-strike', 
         'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Strike_Medals',
-        'selector': '#mw-content-text > table > tbody > tr > td > div > table'
+        'i': 0
     }
 ]
 
@@ -50,7 +50,6 @@ test = [
     {
         'game': 'halo3', 
         'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
-        'selector': '#mw-content-text > table table tbody',
         'i': 3
     }
 ]
@@ -69,13 +68,11 @@ def makeSheets(gameName):
 def getSoup(link):
     headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36' }
     res = requests.get(link, headers=headers)
-    if res.raise_for_status(): # This may be an exception on its own.
-        raise Exception('The web fetch request failed.') 
-    else:
-        return bs4.BeautifulSoup(res.text, 'html.parser')
+    res.raise_for_status()
+    return bs4.BeautifulSoup(res.text, 'html.parser')
 
 def getTable(game, res):
-    elems = res.select(game['selector'])
+    elems = res.select('#mw-content-text > table table tbody')
     return elems[game['i']]
 
 #TODO: Find all tr elements that contain td elements. For each qualifying tr:
