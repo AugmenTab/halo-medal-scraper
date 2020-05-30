@@ -1,6 +1,6 @@
 #! python3
 
-import os, openpyxl, bs4, requests
+import os, openpyxl, bs4, requests, selenium
 wb = openpyxl.load_workbook('medal-list.xlsx')
 
 gameList = [
@@ -50,7 +50,7 @@ test = [
     {
         'game': 'halo3', 
         'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
-        'selector': '#mw-content-text > table:nth-child(2) > tbody > tr > td > div > table:nth-child(15)'
+        'selector': '#mw-content-text > table table tbody'
     }
 ]
 
@@ -68,13 +68,14 @@ def makeSheets(gameName):
 def getSoup(link):
     headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36' }
     res = requests.get(link, headers=headers)
-    if res.raise_for_status():
-        raise Exception('The web fetch request failed.')
+    if res.raise_for_status(): # This may be an exception on its own.
+        raise Exception('The web fetch request failed.') 
     else:
         return bs4.BeautifulSoup(res.text, 'html.parser')
 
 def getElems(game, res):
-    #
+    elems = res.select(game['selector'])
+    print(elems[3])
 
 #TODO: Range over table on URL page.
 #TODO: For each table row:
