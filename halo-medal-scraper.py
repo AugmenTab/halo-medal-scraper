@@ -108,7 +108,6 @@ def saveMedalPic(dir, medal):
     img.write(res.content)
     img.close()
     return fileName
-    
 
 def logMedalInfo(sheetName, fileName, medalName, requirement):
     sheet = wb[sheetName]
