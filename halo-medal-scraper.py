@@ -74,23 +74,30 @@ def getTable(game, res):
     elems = res.select('#mw-content-text > table table tbody')
     return elems[game['i']]
 
-#TODO: Find all tr elements that contain td elements. For each qualifying tr:
-    #TODO: Collect name and win condition, then append to Excel file.
-    #TODO: Navigate to image page, download image, and record file name.
-    #TODO: Add name to correct line on Excel file.
-    #TODO: Log any missing medal images on separate sheet by game and medal name.
-    #TODO: Mark each game done when complete on checklist page.
+def getMedals(table):
+    rows = table.select('tr')
+    medals = []
+    for row in rows:
+        if row.find('td'):
+            medals.append(row)
+    return medals
+
+#TODO: Collect name and win condition, then append to Excel file.
+#TODO: Navigate to image page, download image, and record file name.
+#TODO: Add name to correct line on Excel file.
+#TODO: Log any missing medal images on separate sheet by game and medal name.
+#TODO: Mark each game done when complete on checklist page.
 
 def scrapeMedals(games):
     global wb
     wb = openpyxl.load_workbook('medal-list.xlsx')
     for game in games:
         #makeFolder(game['game'])
-        makeSheets(game['game'])
-        #table = getTable(game, getSoup(game['url']))
+        #makeSheets(game['game'])
+        table = getTable(game, getSoup(game['url']))
+        medals = getMedals(table)
     wb.save('medal-list.xlsx')
     wb.close()
     
-
 if __name__ == "__main__":
     scrapeMedals(test) #switch to gameList when complete
