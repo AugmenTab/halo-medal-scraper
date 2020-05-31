@@ -132,4 +132,4 @@ def scrapeMedals(games):
     wb.close()
     
 if __name__ == "__main__":
-    scrapeMedals(test) #switch to gameList when complete
+    scrapeMedals(gameList)
