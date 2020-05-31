@@ -62,10 +62,13 @@ def makeFolder(gameName):
     if not os.path.exists(dir):
         os.mkdir(dir)
     
-def makeSheets(gameName):
+def makeSheet(gameName):
     sheets = wb.sheetnames
     if gameName not in sheets:
-        wb.create_sheet(gameName)
+        sheet = wb.create_sheet(gameName)
+        sheet['A1'] = 'file name'
+        sheet['B1'] = 'medal name'
+        sheet['C1'] = 'requirement'
         saveFile()
 
 def getSoup(link):
@@ -87,13 +90,12 @@ def getMedals(table):
     return medals
 
 def logMedals(game, medals):
-    makeFolder(game['game'])
-    makeSheets(game['game'])
-    print(medals[0].select('td')[2].text)
-    #for medal in medals:
+    #makeFolder(game['game'])
+    makeSheet(game['game'])
+    test = 'test'
+    for medal in medals:
         #function that saves the medal picture
-        #function that records the file name
-        #function that records the medal name and win condition
+        logMedalInfo(game['game'], test, medal.select('td')[1].text.strip(), medal.select('td')[2].text.strip())
     #print('All medals logged for ' + game['game'] + '.')
     #function that marks game complete on checklist page.
 
@@ -101,10 +103,15 @@ def logMedals(game, medals):
 #def saveMedalPic(?)
 
 #TODO: Append file name, medal name, and win condition in Excel sheet.
-#def logMedalInfo(fileName, medalName, requirement):
+def logMedalInfo(sheetName, fileName, medalName, requirement):
+    sheet = wb[sheetName]
+    row = (fileName, medalName, requirement)
+    sheet.append(row)
 
 #TODO: Mark each game done when complete on checklist page.
 #def markComplete(game)
+
+#TODO: Get the "no medals" medal?
 
 def scrapeMedals(games):
     global wb
@@ -113,7 +120,7 @@ def scrapeMedals(games):
         table = getTable(game, getSoup(game['url']))
         medals = getMedals(table)
         logMedals(game, medals)
-    #saveFile()
+    saveFile()
     wb.close()
     
 if __name__ == "__main__":
