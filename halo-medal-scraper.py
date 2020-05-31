@@ -96,20 +96,22 @@ def logMedals(game, medals):
     for medal in medals:
         #function that saves the medal picture
         logMedalInfo(game['game'], test, medal.select('td')[1].text.strip(), medal.select('td')[2].text.strip())
-    #print('All medals logged for ' + game['game'] + '.')
-    #function that marks game complete on checklist page.
+    markComplete(game['game'])
 
 #TODO: Navigate to image page, download image, and return file name.
 #def saveMedalPic(?)
 
-#TODO: Append file name, medal name, and win condition in Excel sheet.
 def logMedalInfo(sheetName, fileName, medalName, requirement):
     sheet = wb[sheetName]
     row = (fileName, medalName, requirement)
     sheet.append(row)
 
-#TODO: Mark each game done when complete on checklist page.
-#def markComplete(game)
+def markComplete(game):
+    sheet = wb['checklist']
+    completedGame = [game]
+    sheet.append(completedGame)
+    saveFile()
+    print('All medals logged for ' + str(completedGame) + '.')
 
 #TODO: Get the "no medals" medal?
 
