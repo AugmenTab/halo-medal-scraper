@@ -87,6 +87,8 @@ def getMedals(table):
     return medals
 
 def logMedals(game, medals):
+    makeFolder(game['game'])
+    makeSheets(game['game'])
     print(medals[0].select('td')[2].text)
     #for medal in medals:
         #function that saves the medal picture
@@ -108,8 +110,6 @@ def scrapeMedals(games):
     global wb
     wb = openpyxl.load_workbook('medal-list.xlsx')
     for game in games:
-        #makeFolder(game['game'])
-        #makeSheets(game['game'])
         table = getTable(game, getSoup(game['url']))
         medals = getMedals(table)
         logMedals(game, medals)
