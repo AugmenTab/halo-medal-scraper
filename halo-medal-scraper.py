@@ -1,6 +1,6 @@
 #! python3
 
-import os, openpyxl, bs4, requests
+import os, openpyxl, bs4, requests, urllib
 
 gameList = [
     {
@@ -61,6 +61,7 @@ def makeFolder(gameName):
     dir = os.path.join('.', 'medals', str(gameName))
     if not os.path.exists(dir):
         os.mkdir(dir)
+    return dir
     
 def makeSheet(gameName):
     sheets = wb.sheetnames
@@ -72,8 +73,7 @@ def makeSheet(gameName):
         saveFile()
 
 def getSoup(link):
-    headers = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36' }
-    res = requests.get(link, headers=headers)
+    res = requests.get(link)
     res.raise_for_status()
     return bs4.BeautifulSoup(res.text, 'html.parser')
 
@@ -90,16 +90,25 @@ def getMedals(table):
     return medals
 
 def logMedals(game, medals):
-    #makeFolder(game['game'])
+    dir = makeFolder(game['game'])
     makeSheet(game['game'])
-    test = 'test'
     for medal in medals:
-        #function that saves the medal picture
-        logMedalInfo(game['game'], test, medal.select('td')[1].text.strip(), medal.select('td')[2].text.strip())
+        fileName = saveMedalPic(dir, medal.select('a')[0])
+        logMedalInfo(game['game'], fileName, medal.select('td')[1].text.strip(), medal.select('td')[2].text.strip())
     markComplete(game['game'])
 
-#TODO: Navigate to image page, download image, and return file name.
-#def saveMedalPic(?)
+def saveMedalPic(dir, medal):
+    fileName = medal.get('href')[6:]
+    base = 'https://www.halopedia.org'
+    soup = getSoup(urllib.parse.urljoin(base, medal.get('href')))
+    imgLink = soup.select('#file > a > img')[0].get('src')
+    res = requests.get(urllib.parse.urljoin(base, imgLink))
+    res.raise_for_status()
+    img = open(os.path.join(dir, fileName), 'wb')
+    img.write(res.content)
+    img.close()
+    return fileName
+    
 
 def logMedalInfo(sheetName, fileName, medalName, requirement):
     sheet = wb[sheetName]
@@ -112,8 +121,6 @@ def markComplete(game):
     sheet.append(completedGame)
     saveFile()
     print('All medals logged for ' + str(completedGame) + '.')
-
-#TODO: Get the "no medals" medal?
 
 def scrapeMedals(games):
     global wb

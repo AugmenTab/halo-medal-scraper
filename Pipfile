@@ -9,6 +9,7 @@ verify_ssl = true
 openpyxl = "*"
 beautifulsoup4 = "*"
 requests = "*"
+urllib = "*"
 
 [requires]
 python_version = "3.7"
