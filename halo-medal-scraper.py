@@ -47,9 +47,9 @@ gameList = [
 
 test = [
     {
-        'game': 'halo3', 
-        'url': 'https://www.halopedia.org/List_of_Halo_3_and_Halo_3:_ODST_Medals',
-        'i': 3
+        'game': 'spartan-assault', 
+        'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Assault_Medals',
+        'i': 0
     }
 ]
 
@@ -90,11 +90,18 @@ def getMedals(table):
     return medals
 
 def logMedals(game, medals):
+    print('Logging medals for ' + game['game'] + '.')
     dir = makeFolder(game['game'])
     makeSheet(game['game'])
     for medal in medals:
-        fileName = saveMedalPic(dir, medal.select('a')[0])
-        logMedalInfo(game['game'], fileName, medal.select('td')[1].text.strip(), medal.select('td')[2].text.strip())
+        try:
+            fileName = saveMedalPic(dir, medal.select('a')[0])
+        except IndexError as e:
+            fileName = 'No image.'
+        try:
+            logMedalInfo(game['game'], fileName, medal.select('td')[1].text.strip(), medal.select('td')[2].text.strip())
+        except IndexError:
+            continue
     markComplete(game['game'])
 
 def saveMedalPic(dir, medal):
@@ -114,12 +121,11 @@ def logMedalInfo(sheetName, fileName, medalName, requirement):
     row = (fileName, medalName, requirement)
     sheet.append(row)
 
-def markComplete(game):
+def markComplete(gameName):
     sheet = wb['checklist']
-    completedGame = [game]
-    sheet.append(completedGame)
+    sheet.append([gameName])
     saveFile()
-    print('All medals logged for ' + str(completedGame) + '.')
+    print('All medals logged for ' + gameName + '.')
 
 def scrapeMedals(games):
     global wb
@@ -132,4 +138,4 @@ def scrapeMedals(games):
     wb.close()
     
 if __name__ == "__main__":
-    scrapeMedals(gameList)
+    scrapeMedals(test)
