@@ -1,6 +1,6 @@
 #! python3
 
-import os, openpyxl, bs4, requests, urllib
+import os, openpyxl, bs4, requests, urllib, time
 
 gameList = [
     {
@@ -45,14 +45,6 @@ gameList = [
     }
 ]
 
-test = [
-    {
-        'game': 'spartan-assault', 
-        'url': 'https://www.halopedia.org/List_of_Halo:_Spartan_Assault_Medals',
-        'i': 0
-    }
-]
-
 def saveFile():
     wb.save('medal-list.xlsx')
     print('File saved.')
@@ -90,7 +82,7 @@ def getMedals(table):
     return medals
 
 def logMedals(game, medals):
-    print('Logging medals for ' + game['game'] + '.')
+    print('Logging medals for ' + game['game'] + '...')
     dir = makeFolder(game['game'])
     makeSheet(game['game'])
     for medal in medals:
@@ -138,4 +130,7 @@ def scrapeMedals(games):
     wb.close()
     
 if __name__ == "__main__":
-    scrapeMedals(test)
+    start_time = time.time()
+    print('Beginning medal scraping.')
+    scrapeMedals(gameList)
+    print('All medals scraped in %s seconds.' % (round(time.time() - start_time)))
